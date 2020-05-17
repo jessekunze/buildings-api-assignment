@@ -1,4 +1,30 @@
-Assumptions:
+# Test cases:
+
+![Test cases showing 100% test case pass](https://i.imgur.com/PAAAiyD.jpg)
+
+## Test case 1: PrimaryTypeUtilTest
+
+This test case confirms my function to pick the primary use type functions properly by picking the largest area.
+
+## Test case 2: testGetAllSites
+
+This test case tests the output of getting all of the sites in the database.
+
+## Test case 3: testGetSiteByIdSuccess
+
+This test case tests getting the Site + extra details (total sq footage + primary use type) for a valid Site in the DB
+
+## Test case 4: testGetSiteById404
+
+This test case tests requesting an invalid ID that is not in the database. It confirms a 404 is returned.
+
+## Test case 5: testGetSiteBySize
+
+This tests the function to confirm we filter our Sites by size properly. 
+
+
+
+# Assumptions:
 
 -I just used a 'data-h2.sql' file to populate the H2 database, as I assume this wouldn't be static data and in the 'real world' wouldn't be loaded on boot-up.
 
@@ -7,7 +33,7 @@ Assumptions:
 -It wasn't stated what to do in the case of 2 equally sized uses. In this case, we default to the first instance of the largest size.
 
 
-Things I would do with a bit more time
+# Things I would do with a bit more time
 
 -I was having an interesting issue with gson/optionals where in the controller for getting the details of a sight from an ID, it was wrapping it all in "Value", like below. 
 
@@ -37,7 +63,7 @@ To circumvent this and have it return what was specified in the requirements, I 
 -According to any potential business rules, an interface which allows insertions and updates of the database from the API.
 
 
-Other misc notes:
+# Other misc notes:
 
 -I made specific data transfer objects to transform into JSON (using gson) versus just transforming entities directly as I would've had to both add in some "ignore this attribute" annotations for GSON, plus if I did the entities directly I'd have to either eager fetch subentities (i.e, the list of siteUses in Site) or unproxy before letting gson transform them into JSON.
 
