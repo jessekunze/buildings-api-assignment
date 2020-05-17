@@ -1,82 +1,36 @@
-## Welcome to Measurabl
+Assumptions:
+-I just used a 'data-h2.sql' file to populate the H2 database, as I assume this wouldn't be static data and in the 'real world' wouldn't be loaded on boot-up.
+-It was slightly ambigious when asking for a list of all the sites whether that meant JSON representation of the Site database table, or the Site with details, like in the first task (i.e, including total size + primary type). I opted to demonstrate the former.
+-It wasn't stated what to do in the case of 2 equally sized uses. In this case, we default to the first instance of the largest size.
 
-#### Introduction
+Things I would do with a bit more time
+-I was having an interesting issue with gson/optionals where in the controller for getting the details of a sight from an ID, it was wrapping it all in "Value", like below. 
+To circumvent this and have it return what was specified in the requirements, I do a null check instead of an Optional.
 
-This project is intended to test your Java skills with focus on building Web APIs
-Refer to the email sent to you on how to complete this assignment.
+[
+"value":
+  {
+    "id": 1,
+    "name": "Measurabl HQ",
+    "address": "707 Broadway Suite 1000",
+    "city": "San Diego",
+    "state": "CA",
+    "zipcode": "92101",
+    "totalSize": 13000,
+    "primaryType": {
+      "id": 54,
+      "name": "Office"
+    }
+  }
+] 
 
-#### Getting to know your project
+-The logic to get all sites between X and Y size works, but it would be much more efficient to have that filtered in SQL. Right now, it just grabs 'em all then filters. If the database was huge, it would be a real performance issue.
+-According to any potential business rules, an interface which allows insertions and updates of the database from the API.
 
-#### Maven
-This is project is built using [Maven](https://maven.apache.org/index.html).
-There are many ways to install Maven. The easiest way is to download it, unzip the archive, add it to the system path and run it.
+Other misc notes:
+-I made specific data transfer objects to transform into JSON (using gson) versus just transforming entities directly as I would've had to both add in some "ignore this attribute" annotations for GSON, plus if I did the entities directly I'd have to either eager fetch subentities (i.e, the list of siteUses in Site) or unproxy before letting gson transform them into JSON.
+-I see warnings in the console for my site controller when swagger UI is launched:
+	2020-05-17 18:07:02.568  WARN 17468 --- [nio-8080-exec-6] i.s.m.p.AbstractSerializableParameter    : Illegal DefaultValue null for parameter type integer
 
-If you are running on a mac: [Install Maven on a Mac](https://www.code2bits.com/how-to-install-maven-on-macos-using-homebrew/)
-
-```bash
-brew update
-brew search maven
-brew info maven
-brew install maven
-brew cleanup
-```
-
-If you are running on Ubuntu:
-
-```bash
-sudo apt update
-sudo apt install maven
-mvn -version
-```
-
-If you are running on Windows [Download Maven](https://maven.apache.org/download.cgi)
-```bash
-unzip apache-maven-3.6.1-bin.zip
-# Add Maven to system PATH
-
-# Make sure Java is installed in your system
-echo %JAVA_HOME% 
-C:\Program Files\Java\jdk1.8.0_172
-
-# Test Maven
-mvn -version
-
-```
-  
-#### How to build and run the project
-
-1. From command line, go to the root of the project
-2. `mvn clean install` - this also runs all the unit tests
-3. `mvn spring-boot:run` 
- - this invokes the project and binds the server to port 8080 
-
-#### Docker
-
-Alternatively, if there are issues with local installs of Java or Maven, you can build/test/run the app with Docker.
-
-    docker build -t buildings-api-assignment .
-    docker run -it -p8080:8080 buildings-api-assignment
-
-#### How to invoke and access the default (root) controller
-1. From the command line `curl localhost:8080`
-2. From a browser http://localhost:8080
-3. From Postman `GET http://localhost:8080`
-
-#### Special notes
-1. This project uses Lombok to generate boilerplate getters/setters
-2. To install [Lombok](https://projectlombok.org/)
-3. We strongly recommend [IntelliJ](https://www.jetbrains.com/idea/download/) - community edition is free
-
-#### H2 enabled
-To simplify data access, this project uses an embedded database H2
-
-* Once started, H2 UI can be accessed as follows
-1. URL http://localhost:8080/h2-console
-2. User name: measurabl
-3. Password: measurabl
-4. JDBC URL: jdbc:h2:mem:measurabl
-
-#### Swagger enabled
-This project has Swagger enabled. This means all endpoints in this project are OpenAPI documented
-- HTML formatted documentation -> http://localhost:8080/swagger-ui.html#/
-- Machine readable API http://localhost:8080/v2/api-docs 
+	java.lang.NumberFormatException: For input string: ""
+From what I understand, you shouldn't have a default value for a required parameter. This is the first I've used Swagger, though, so it may have something to do with that.
